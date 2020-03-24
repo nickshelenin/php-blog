@@ -1,10 +1,10 @@
 <?php
 require './header.php';
 
-$err = '';
-$nameErr = '';
-$emailErr = '';
-$passErr = '';
+$err = "";
+$nameErr = "";
+$emailErr = "";
+$passErr = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    // validate inputs
