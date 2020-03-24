@@ -1,43 +1,59 @@
 <?php
-require 'header.php';
+require './header.php';
 
 $id = $_GET['id'];
-$query = "SELECT * FROM posts WHERE id = ${id}";
-$result = mysqli_query($conn, $query);
-$post = mysqli_fetch_assoc($result);
+$sql = 'SELECT * FROM posts WHERE id = :id';
+$stmt = $dbh->prepare($sql);
+$stmt->execute(['id' => $id]);
+$post = $stmt->fetch();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $query = "DELETE FROM posts WHERE id = ${id}";
-    mysqli_query($conn, $query);
-    header('Location: index.php');
+   $sql = 'DELETE FROM posts WHERE id = :id';
+   $stmt = $dbh->prepare($sql);
+   $stmt->execute(['id' => $id]);
+   header('Location: index.php');
 }
-
 ?>
 
-<div class="container">
-    <div class="col-lg-8">
+<?php if (isset($_SESSION['userId'])) { ?>
 
-        <h1 class="mt-4"><?= $post['title'] ?></h1>
+   <div class="container">
+      <div class="col-lg-8">
+         <h1 class="mt-4 mb-4"><?= $post['title'] ?></h1>
 
-        <p class="lead"> by
+         <div class="lead">
+            <span>by</span>
             <span class="font-weight-bold">
-                <?= $post['author'] ?>
+               <?= $post['author'] ?>
             </span>
-        </p>
-        <hr>
+         </div>
+         <hr>
 
-        <p>Posted on <?= $post['created_at'] ?> </p>
-        <hr>
+         <div class="lead">
+            <p><?= $post['body'] ?></p>
+         </div>
+         <hr>
 
-        <p class="lead"><?= $post['body'] ?></p>
-        <hr>
+         <div>
+            <span>Posted on</span>
+            <span><?= $post['created_at'] ?></span>
+         </div>
+         <hr>
 
-        <div class=" d-flex">
-            <a href="editpost.php?id=<?= $post['id'] ?>" class="btn btn-info mr-2">Edit post</a>
-
+         <div class="d-flex">
+            <a href="edit_post.php?id=<?= $post['id'] ?>" class="btn btn-info mr-2">Edit post</a>
             <form action="" method="POST">
-                <button class="btn btn-danger">Delete post</button>
+               <button class="btn btn-danger">Delete post</button>
             </form>
-        </div>
-    </div>
-</div>
+         </div>
+      </div>
+   </div>
+
+
+<?php } else {
+   header("Location: login.php");
+} ?>
+
+<?php
+require './footer.php';
+?>
