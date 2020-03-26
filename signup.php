@@ -21,26 +21,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
    $pass = validateInput($_POST['pass']);
    $passRepeat = validateInput($_POST['pass-repeat']);
 
+   // checking if any of inputs are empty
    if (empty($name) || empty($email) || empty($pass) || empty($passRepeat)) {
       $err = "Fields cannot be empty";
       header("Location: signup.php?error=emptyfileds&name=${name}&email=${email}");
       exit();
+   // checking if name and email are invalid
    } elseif (!preg_match("/^[a-zA-Z0-9]*$/", $name) && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $err = "Invalid name and email";
       header("Location: signup.php?error=invalidname&email");
       exit();
+   // checking if name input is invalid
    } elseif (!preg_match("/^[a-zA-Z0-9]*$/", $name)) {
       $nameErr = "Invalid name";
       header("Location: signup.php?error=invalidname");
       exit();
+   // checking if email input is invalid 
    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
       $emailErr = "Invalid email";
       header("Location: signup.php?error=invalidemail");
       exit();
+   // checking if password is less than 4 characters
    } elseif (strlen($pass) < 4) {
       $passErr = "Short password";
       header("Location: signup.php?error=shortpassword&name=${name}&email=${email}");
       exit();
+   // checking if password and password repeat inputs do not match
    } elseif ($pass !== $passRepeat) {
       $passErr = "Passwords do not match";
       header("Location: signup.php?error=passwordmatch&name=${name}&email=${email}");
